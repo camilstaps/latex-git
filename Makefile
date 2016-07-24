@@ -26,7 +26,7 @@ all: $(STY) $(INS) $(DOC)
 		$(LATEX) $(LATEXFLAGS) $<
 
 clean:
-	$(RM) -v $(addprefix $(PKG).,aux glo hd idx log out)
+	$(RM) -v $(addprefix $(PKG).,aux glo gls hd idx ilg ind log out tmp toc)
 
 distclean: clean
 	$(RM) -v $(addprefix $(PKG).,ins pdf sty)
