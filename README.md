@@ -1,2 +1,2 @@
-# latex-git
+# latexgit
 LaTeX git wrapper
