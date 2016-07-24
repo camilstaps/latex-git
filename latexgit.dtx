@@ -48,6 +48,7 @@ Copyright (c) 2016 Camil Staps <info@camilstaps.nl>
     basicstyle=\ttfamily\small,
     commentstyle=\itshape\ttfamily\small,
     showspaces=false,
+    keepspaces=true,
     showstringspaces=false,
     breaklines=true,
     backgroundcolor=\color{lightgray},
@@ -68,6 +69,7 @@ Copyright (c) 2016 Camil Staps <info@camilstaps.nl>
   \texttt{\small\hyperref[options]{\textcolor{black}{#1}}}%
 }
 \newcommand{\bashcmd}[1]{\texttt{\small#1}}
+\newcommand{\texcmd}[1]{\texttt{\small#1}}
 \def\GitOptions#1,#2\relax{%
   \gitopt{#1}%
   \begingroup%
@@ -100,7 +102,9 @@ Copyright (c) 2016 Camil Staps <info@camilstaps.nl>
 %
 %\title{The \latexgit{} package}
 %\author{Camil Staps\thanks{Email: info@camilstaps.nl}}
-%\date{Version \gitcommithash[shortHash]}
+%\date{^^A
+%  Version \gitcommithash[shortHash]\\
+%  \small{\gitcommitdate[formatDate,formatTime,formatInterDateTime={,~},showTimeZone]}}
 %
 %\maketitle
 %
@@ -112,17 +116,35 @@ Copyright (c) 2016 Camil Staps <info@camilstaps.nl>
 %\DoNotIndex{\LaTeX,\pgfkeys}
 %
 %\begin{abstract}
-%  This is version \gitcommithash[shortHash] of the \latexgit{} documentation.
-%  It was committed by \gitcommitauthorname{} on
-%  \gitcommitdate[formatDate,formatTime]. The previous commit was
-%  \gitcommithash[shortHash,revision=HEAD^]. Changes since then:
-%  \gitcommitmsg.
+%  This is the documentation of the \latexgit{} package.
+%  Several macros are defined to fetch \git{} information and typeset it.
+%  The macros defined by \latexgit{} can be helpful to documentation authors
+%  and others to whom clear document versioning is important.
 %\end{abstract}
 %
 %\tableofcontents
 %
 %\section{Overview}
 %\label{sec:overview}
+%This is version \gitcommithash[shortHash] of the \latexgit{} documentation.
+%It was committed by \gitcommitauthorname{} on
+%  \gitcommitdate[formatDate,formatTime].
+%The author mentioned: ``\gitcommitmsg''.
+%The previous commit was \gitcommithash[shortHash,revision=HEAD^].
+%
+%\subsection{Related packages}
+%\label{sec:overview:related-packages}
+%Brent Longborough's \textsf{gitinfo} and \textsf{gitinfo2} packages have
+%similar features, with a different interface. Instead of running \git{}
+%commands, it relies on special \git{} files. This has the advantage that it
+%works on Windows, however, \git{} hooks have to be put into place.
+%
+%Andr\'e Hilbig's \textsf{gitfile-info} does something similar as
+%\textsf{gitinfo} and \latexgit, but the package manual is in German so who
+%knows. It seems that Python and \git{} hooks are required.
+%
+%Brent Longborough's \textsf{gitlog} package fetches \git{} log information
+%from the repository and formats it.
 %
 %\subsection{Dependencies}
 %\label{sec:overview:dependencies}
@@ -207,7 +229,9 @@ Copyright (c) 2016 Camil Staps <info@camilstaps.nl>
 %    \checkmark & \checkmark & \checkmark &
 %      \gitcommitdate[formatDate,formatTime,showTimeZone] \\
 %  \end{tabular}
-%  \caption{Formatting dates\label{tab:formatting-dates}}
+%  \caption{Formatting dates, with
+%    \texcmd{formatInterDateTime=\textbackslash{}space\{\}at\textbackslash{}space\{\}}.
+%    \label{tab:formatting-dates}}
 %\end{table}
 %
 %\section{Examples}
