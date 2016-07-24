@@ -6,14 +6,10 @@ PKG:=latexgit
 DOC:=$(PKG).pdf
 STY:=$(PKG).sty
 INS:=$(PKG).ins
-README:=README.md
 
-all: $(STY) $(INS) $(README) $(DOC)
+all: $(STY) $(INS) $(DOC)
 
 %.sty: %.dtx
-	$(TEX) $<
-
-$(README): $(PKG).dtx
 	$(TEX) $<
 
 %.ins: %.dtx
