@@ -42,6 +42,7 @@ Copyright (c) 2016 Camil Staps <info@camilstaps.nl>
 \usepackage[numbered]{hypdoc}
 \usepackage{hyperref}
 \usepackage{enumitem}
+\usepackage{verbatim}
 \EnableCrossrefs
 \CodelineIndex
 \RecordChanges
@@ -63,7 +64,6 @@ Copyright (c) 2016 Camil Staps <info@camilstaps.nl>
   \next%
 }
 \def\gitoptions#1{%
-  \par
   Recognised options:
   \begingroup%
   \edef\@tempa{#1,}%
@@ -102,8 +102,10 @@ Copyright (c) 2016 Camil Staps <info@camilstaps.nl>
 %\section{Implementation}
 %Define the package and load required packages.
 %
-%    \begin{macrocode}
+%    \begin{comment}
 %<*package>
+%    \end{comment}
+%    \begin{macrocode}
 \NeedsTeXFormat{LaTeX2e}
 \ProvidesPackage{latexgit}
 
@@ -118,13 +120,13 @@ Copyright (c) 2016 Camil Staps <info@camilstaps.nl>
 %    \end{macrocode}
 %\end{macro}
 %
-%\begin{macro}{\gitresult}
+%\begin{macro}{\git@result}
 %    When a \git{} command is run, the result is stored in \cs{git@rawresult}.
 %    However, using \cs{read} results in spacing at the end of the macro.
 %    Hence, we need to use \cs{unskip} to remove this spacing.
 %    This is a wrapper for \cs{git@rawresult} that adds this \cs{unskip}.
 %    \begin{macrocode}
-\newcommand{\gitresult}[0]{\git@rawresult\unskip}
+\newcommand{\git@result}[0]{\git@rawresult\unskip}
 %    \end{macrocode}
 %\end{macro}
 %
@@ -197,32 +199,49 @@ Copyright (c) 2016 Camil Staps <info@camilstaps.nl>
 %    \end{macrocode}
 %\end{macro}
 %
-%\begin{macro}{\GitCommitHash}
+%\begin{macro}{\gitcommithash}
 %    Get a commit hash.
 %    \gitoptions{revision,shortHash}
 %
 %    \begin{macrocode}
-\newcommand{\gitcommithash}[1][]{\GitCommitHash[#1]\gitresult}
-\newcommand{\GitCommitHash}[1][]{%
+\newcommand{\gitcommithash}[1][]{%
+  \git@commithash[#1]\git@result}
+%    \end{macrocode}
+%\end{macro}
+%
+%\begin{macro}{\git@commithash}
+%    Like \cs{gitcommithash}, but does not return the output.
+%    \begin{macrocode}
+\newcommand{\git@commithash}[1][]{%
   \pgfkeys{/git,default,#1}%
   \ifgit@opt@ShortHash%
-    \git@command{git log -n 1 --oneline \git@opt@Revision | cut -d' ' -f1}%
+    \git@command{git log -n 1 --oneline \git@opt@Revision
+      | cut -d' ' -f1}%
   \else%
-    \git@command{git log -n 1 \git@opt@Revision | head -1 | cut -d' ' -f2}%
+    \git@command{git log -n 1 \git@opt@Revision
+      | head -1 | cut -d' ' -f2}%
   \fi%
 }
 %    \end{macrocode}
 %\end{macro}
 %
-%\begin{macro}{\GitCommitMsg}
+%\begin{macro}{\gitcommitmsg}
 %    Get a commit message.
 %    \gitoptions{revision}
 %
 %    \begin{macrocode}
-\newcommand{\gitcommitmsg}[1][]{\GitCommitMsg[#1]\gitresult}
-\newcommand{\GitCommitMsg}[1][]{%
+\newcommand{\gitcommitmsg}[1][]{%
+  \git@commitmsg[#1]\git@result}
+%    \end{macrocode}
+%\end{macro}
+%
+%\begin{macro}{\git@commitmsg}
+%    Like \cs{gitcommitmsg}, but does not return the output.
+%    \begin{macrocode}
+\newcommand{\git@commitmsg}[1][]{%
   \pgfkeys{/git,default,#1}%
-  \git@command{git log -n 1 --oneline \git@opt@Revision | cut -d' ' -f2-}%
+  \git@command{git log -n 1 --oneline \git@opt@Revision
+    | cut -d' ' -f2-}%
 }
 %    \end{macrocode}
 %\end{macro}
@@ -250,7 +269,7 @@ Copyright (c) 2016 Camil Staps <info@camilstaps.nl>
 %    \end{macrocode}
 %\end{macro}
 %
-%\begin{macro}{\GitCommitDate}
+%\begin{macro}{\gitcommitdate}
 %    Get a commit date. If \gitopt{formatDate} is set,
 %    \cs{git@formatCommitDate} will be used. If \gitopt{formatTime} is set, and
 %    \gitopt{formatDate} is unset, \cs{git@formatCommitTime} will be used.
@@ -258,7 +277,7 @@ Copyright (c) 2016 Camil Staps <info@camilstaps.nl>
 %
 %    \begin{macrocode}
 \newcommand{\gitcommitdate}[1][]{%
-  \GitCommitDate[#1]%
+  \git@commitdate[#1]%
   \ifgit@opt@FormatDate%
     \expandafter\git@formatCommitDate\git@rawresult\relax%
     \ifgit@opt@FormatTime%
@@ -268,61 +287,89 @@ Copyright (c) 2016 Camil Staps <info@camilstaps.nl>
   \else\ifgit@opt@FormatTime%
     \expandafter\git@formatCommitTime\git@rawresult\relax%
   \else
-    \gitresult%
+    \git@result%
   \fi\fi%
-}
-\newcommand{\GitCommitDate}[1][]{%
-  \pgfkeys{/git,default,#1}%
-  \git@command{git log -n 1 --date=iso \git@opt@Revision |
-    grep Date | head -1 | cut -d' ' -f2-}%
 }
 %    \end{macrocode}
 %\end{macro}
 %
-%\begin{macro}{\GitCommitAuthor}
+%\begin{macro}{\git@commitdate}
+%    Like \cs{gitcommitdate}, but does not return the output.
+%    \begin{macrocode}
+\newcommand{\git@commitdate}[1][]{%
+  \pgfkeys{/git,default,#1}%
+  \git@command{git log -n 1 --date=iso \git@opt@Revision
+    | grep Date | head -1 | cut -d' ' -f2-}%
+}
+%    \end{macrocode}
+%\end{macro}
+%
+%\begin{macro}{\gitcommitauthor}
 %    Get a commit author.
 %    \gitoptions{revision}
 %
 %    \begin{macrocode}
-\newcommand{\gitcommitauthor}[1][]{\GitCommitAuthor[#1]\gitresult}
-\newcommand{\GitCommitAuthor}[1][]{%
+\newcommand{\gitcommitauthor}[1][]{%
+  \git@commitauthor[#1]\git@result}
+%    \end{macrocode}
+%\end{macro}
+%
+%\begin{macro}{\git@commitauthor}
+%    Like \cs{gitcommitauthor}, but does not return the output.
+%    \begin{macrocode}
+\newcommand{\git@commitauthor}[1][]{%
   \pgfkeys{/git,default,#1}%
-  \git@command{git log -n 1 \git@opt@Revision |
-    grep Author | head -1 | cut -d' ' -f2-}%
+  \git@command{git log -n 1 \git@opt@Revision
+    | grep Author | head -1 | cut -d' ' -f2-}%
 }
 %    \end{macrocode}
 %\end{macro}
 %
-%\begin{macro}{\GitCommitAuthorName}
+%\begin{macro}{\gitcommitauthorname}
 %    Get a commit author's name.
 %    \gitoptions{revision}
 %
 %    \begin{macrocode}
-\newcommand{\gitcommitauthorname}[1][]{\GitCommitAuthorName[#1]\gitresult}
-\newcommand{\GitCommitAuthorName}[1][]{%
+\newcommand{\gitcommitauthorname}[1][]{%
+  \git@commitauthorname[#1]\git@result}
+%    \end{macrocode}
+%\end{macro}
+%
+%\begin{macro}{\git@commitauthorname}
+%    Like \cs{gitcommitauthorname}, but does not return the output.
+%    \begin{macrocode}
+\newcommand{\git@commitauthorname}[1][]{%
   \pgfkeys{/git,default,#1}%
-  \git@command{git log -n 1 \git@opt@Revision |
-    grep Author | head -1 | cut -d' ' -f2- | cut -d'<' -f1}%
+  \git@command{git log -n 1 \git@opt@Revision
+    | grep Author | head -1 | cut -d' ' -f2- | cut -d'<' -f1}%
 }
 %    \end{macrocode}
 %\end{macro}
 %
-%\begin{macro}{\GitCommitAuthorEmail}
+%\begin{macro}{\gitcommitauthoremail}
 %    Get a commit author's email address.
 %    \gitoptions{revision}
 %
 %    \begin{macrocode}
-\newcommand{\gitcommitauthoremail}[1][]{\GitCommitAuthorEmail[#1]\gitresult}
-\newcommand{\GitCommitAuthorEmail}[1][]{%
+\newcommand{\gitcommitauthoremail}[1][]{%
+  \git@commitauthoremail[#1]\git@result}
+%    \end{macrocode}
+%\end{macro}
+%
+%\begin{macro}{\git@commitauthoremail}
+%    Like \cs{gitcommitauthoremail}, but does not return the output.
+%    \begin{macrocode}
+\newcommand{\git@commitauthoremail}[1][]{%
   \pgfkeys{/git,default,#1}%
-  \git@command{git log -n 1 \git@opt@Revision |
-    grep Author | head -1 | cut -d' ' -f2- | cut -d'<' -f2 | cut -d'>' -f1}%
+  \git@command{git log -n 1 \git@opt@Revision
+    | grep Author | head -1 | cut -d' ' -f2-
+    | cut -d'<' -f2 | cut -d'>' -f1}%
 }
 %    \end{macrocode}
 %\end{macro}
 %
-%    \begin{macrocode}
+%    \begin{comment}
 %</package>
-%    \end{macrocode}
+%    \end{comment}
 %
 %\Finale
