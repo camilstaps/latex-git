@@ -48,11 +48,12 @@ Copyright (c) 2016 Camil Staps <info@camilstaps.nl>
 \RecordChanges
 \newlist{options}{description}{1}
 \setlist[options]{font=\small\texttt,itemsep=0pt}
-\newcommand{\git}[0]{\textsf{git}}
+\newcommand{\git}[0]{\gitcmd{git}}
 \newcommand{\gitcmd}[1]{\texttt{\small#1}}
 \newcommand{\gitopt}[1]{%
   \texttt{\small\hyperref[options]{\textcolor{black}{#1}}}%
 }
+\newcommand{\bashcmd}[1]{\texttt{\small#1}}
 \def\GitOptions#1,#2\relax{%
   \gitopt{#1}%
   \begingroup%
@@ -99,7 +100,41 @@ Copyright (c) 2016 Camil Staps <info@camilstaps.nl>
 %
 %\tableofcontents
 %
+%\section{Overview}
+%\label{sec:overview}
+%
+%\subsection{Dependencies}
+%\label{sec:overview:dependencies}
+%\latexgit{} gets its information by running \git{} commands. It uses
+%\cs{write18} for this, so documents using \latexgit{} will have to be compiled
+%with the \bashcmd{-shell-escape} flag.
+%
+%Most of the information is retrieved using \git{} but then parsed using
+%\bashcmd{grep}, \bashcmd{cut} and similar tools. Unfortunately, this is
+%necessary: \gitcmd{git log} accepts arbitrary formats, but uses the percent
+%sign in these formats, and running commands with percent signs does not seem
+%possible using \cs{write18}.
+%
+%An unfortunate side effect of this is that this package will not work on
+%Windows.
+%
+%\subsection{Getting information}
+%\label{sec:overview:getting-information}
+%\latexgit{} runs a shell command using \cs{git@command}. This macro reads the
+%result into \cs{git@rawresult.} This result contains a newline character at
+%the end that needs to be removed to avoid unwanted spacing. Therefore,
+%\cs{git@result} is defined as a wrapper for \cs{git@rawresult} that removes
+%this spacing with \cs{unskip}.
+%
+%\subsection{Interface}
+%For each information-fetching command, two versions are defined: one, which
+%only executes the command (leaving the result available in \cs{git@result});
+%and one, which executes the command and writes the result. An example is
+%\cs{git@commithash} with its counterpart \cs{gitcommithash}. Usually, the
+%latter is most useful.
+%
 %\section{Implementation}
+%\label{sec:implementation}
 %Define the package and load required packages.
 %
 %    \begin{comment}
