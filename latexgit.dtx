@@ -1,3 +1,5 @@
+% \iffalse vim: expandtab:
+% \fi
 % \iffalse meta-comment
 %<*internal>
 \def\nameofplainTeX{plain}
@@ -40,14 +42,26 @@ Copyright (c) 2016 Camil Staps <info@camilstaps.nl>
 \usepackage{lmodern}
 \usepackage{\jobname}
 \usepackage[numbered]{hypdoc}
-\usepackage{hyperref}
+\usepackage{showexpl}
+\usepackage{xcolor}
+\lstset{%
+    basicstyle=\ttfamily\small,
+    commentstyle=\itshape\ttfamily\small,
+    showspaces=false,
+    showstringspaces=false,
+    breaklines=true,
+    backgroundcolor=\color{lightgray},
+    breakautoindent=true,
+}
 \usepackage{enumitem}
 \usepackage{verbatim}
+\usepackage{amssymb}
 \EnableCrossrefs
 \CodelineIndex
 \RecordChanges
+\setcounter{IndexColumns}2
 \newlist{options}{description}{1}
-\setlist[options]{font=\small\texttt,itemsep=0pt}
+\setlist[options]{font=\small\texttt,itemsep=0pt,style=nextline}
 \newcommand{\git}[0]{\gitcmd{git}}
 \newcommand{\gitcmd}[1]{\texttt{\small#1}}
 \newcommand{\gitopt}[1]{%
@@ -89,6 +103,13 @@ Copyright (c) 2016 Camil Staps <info@camilstaps.nl>
 %\date{Version \gitcommithash[shortHash]}
 %
 %\maketitle
+%
+%\DoNotIndex{\def,\expandafter,\global,\let,\newcommand,\relax}
+%\DoNotIndex{\ifeof,\else,\fi,\newif}
+%\DoNotIndex{\NeedsTeXFormat,\PackageError,\ProvidesPackage,\RequirePackage}
+%\DoNotIndex{\newread,\openin,\read}
+%\DoNotIndex{\space,\unskip}
+%\DoNotIndex{\LaTeX,\pgfkeys}
 %
 %\begin{abstract}
 %  This is version \gitcommithash[shortHash] of the \latexgit{} documentation.
@@ -133,6 +154,70 @@ Copyright (c) 2016 Camil Staps <info@camilstaps.nl>
 %\cs{git@commithash} with its counterpart \cs{gitcommithash}. Usually, the
 %latter is most useful.
 %
+%\section{Options}
+%\label{sec:options}
+%A number of options is available to all macros that fetch information through
+%a \textsf{pgfkeys} interface. All keys are recognised by all macros, but not
+%all are considered by each macro. Check the documentation for specific macros
+%to see which options are relevant.
+%
+%\begin{options}
+%  \def\seedatestable{See \autoref{tab:formatting-dates} for an overview.}
+%  \label{options}
+%  \item[directory=DIR]
+%    Use the git repository in directory \verb$DIR$ (or its first parent
+%    directory that is a git repository). \latexgit{} will \bashcmd{cd} to this
+%    directory before executing the actual \git{} command.
+%  \item[formatDate]
+%    Format dates using \textsf{datetime}'s \cs{formatdate}. \seedatestable
+%  \item[formatTime]
+%    Format times using \textsf{datetime}'s \cs{formattime}. \seedatestable
+%  \item[formatInterDateTime]
+%    If both \gitopt{formatDate} and \gitopt{formatTime} are set, this is put
+%    in between (e.g.  `\verb$\space{}at\space{}$' in English --- this is also
+%    the default).
+%  \item[revision=REV]
+%    Get the hash of revision \verb$REV$ (e.g.  \gitcmd{master},
+%    \gitcmd{HEAD\textasciicircum}, etc.). Note that if multiple circumflexes
+%    are desired, the catcode of \verb$^$ has to be changed. For example:
+%    \LTXinputExample[numbers=none,pos=r]{exmp/catcode-circumflex.tex}
+%  \item[showTimeZone]
+%    When \gitopt{formatTime} is set: show the time zone between parentheses
+%    after the time. \seedatestable
+%  \item[shortHash]
+%    Get only the first seven characters of the hash, as in \gitcmd{git log
+%    -{}-oneline}.
+%\end{options}
+%
+%\begin{table}
+%  \centering\footnotesize
+%  \begin{tabular}{c c c c}
+%    \texttt{formatDate} & \texttt{formatTime} & \texttt{showTimeZone} & Result
+%    \\[2pt]\hline\rule{0pt}{3ex}
+%               &            & (any)      &
+%      \gitcommitdate[showTimeZone] \\
+%               & \checkmark &            &
+%      \gitcommitdate[formatTime] \\
+%               & \checkmark & \checkmark &
+%      \gitcommitdate[formatTime,showTimeZone] \\
+%    \checkmark &            & (any)      &
+%      \gitcommitdate[formatDate,showTimeZone] \\
+%    \checkmark & \checkmark &            &
+%      \gitcommitdate[formatDate,formatTime] \\
+%    \checkmark & \checkmark & \checkmark &
+%      \gitcommitdate[formatDate,formatTime,showTimeZone] \\
+%  \end{tabular}
+%  \caption{Formatting dates\label{tab:formatting-dates}}
+%\end{table}
+%
+%\section{Examples}
+%\label{sec:examples}
+%\DescribeMacro{\gitcommithash}
+%\DescribeMacro{\gitcommitmsg}
+%\DescribeMacro{\gitcommitauthor}
+%    These macros are used to get and print basic commit information.
+%    \LTXinputExample[pos=b,numbers=none]{exmp/gitcommit.tex}
+%
 %\section{Implementation}
 %\label{sec:implementation}
 %Define the package and load required packages.
@@ -169,25 +254,6 @@ Copyright (c) 2016 Camil Staps <info@camilstaps.nl>
 %    recognised. Check the documentation of the macro to see which options are
 %    considered.
 %
-%    \begin{options}
-%      \label{options}
-%      \item[directory=DIR] use the git repository in directory \verb$DIR$ (or
-%        its first parent directory that is a git repository).
-%      \item[formatDate] format dates using \textsf{datetime}'s
-%        \cs{formatdate}.
-%      \item[formatTime] format times using \textsf{datetime}'s
-%        \cs{formattime}.
-%      \item[formatInterDateTime] if both \gitopt{formatDate} and
-%        \gitopt{formatTime} are set, this is put in between (e.g.
-%        `\verb$\space{}at\space{}$' in English --- this is also the default).
-%      \item[revision=REV] get the hash of revision \verb$REV$ (e.g.
-%        \gitcmd{master}, \gitcmd{HEAD\textasciicircum}, etc.).
-%      \item[showTimeZone] when \gitopt{formatTime} is set: show the time zone
-%        between parentheses after the time.
-%      \item[shortHash] get only the first seven characters of the hash, as in
-%        \gitcmd{git log -{}-oneline}.
-%    \end{options}
-%
 %    \begin{macrocode}
 \newif\ifgit@opt@FormatDate
 \newif\ifgit@opt@FormatTime
@@ -202,7 +268,7 @@ Copyright (c) 2016 Camil Staps <info@camilstaps.nl>
     formatTime=false,
     revision=HEAD,
     showTimeZone=false,
-    shortHash=false,
+    shortHash=true,
   },
   directory/.estore in=\git@opt@Directory,
   formatDate/.is if=git@opt@FormatDate,
@@ -218,8 +284,8 @@ Copyright (c) 2016 Camil Staps <info@camilstaps.nl>
 %    Run a \git{} command and read the output into \cs{git@rawresult}. Before
 %    running the command, the directory will change to \cs{git@opt@Directory}.
 %    \begin{macrocode}
+\newread\git@stream%
 \newcommand{\git@command}[1]{%
-  \newread\git@stream%
   \def\git@rawresult{}%
   \openin\git@stream|"cd \git@opt@Directory; #1"
   \ifeof\git@stream%
@@ -236,7 +302,7 @@ Copyright (c) 2016 Camil Staps <info@camilstaps.nl>
 %
 %\begin{macro}{\gitcommithash}
 %    Get a commit hash.
-%    \gitoptions{revision,shortHash}
+%    \gitoptions{directory,revision,shortHash}
 %
 %    \begin{macrocode}
 \newcommand{\gitcommithash}[1][]{%
@@ -262,7 +328,7 @@ Copyright (c) 2016 Camil Staps <info@camilstaps.nl>
 %
 %\begin{macro}{\gitcommitmsg}
 %    Get a commit message.
-%    \gitoptions{revision}
+%    \gitoptions{directory,revision}
 %
 %    \begin{macrocode}
 \newcommand{\gitcommitmsg}[1][]{%
@@ -308,7 +374,7 @@ Copyright (c) 2016 Camil Staps <info@camilstaps.nl>
 %    Get a commit date. If \gitopt{formatDate} is set,
 %    \cs{git@formatCommitDate} will be used. If \gitopt{formatTime} is set, and
 %    \gitopt{formatDate} is unset, \cs{git@formatCommitTime} will be used.
-%    \gitoptions{formatDate,formatTime,revision,showTimeZone}
+%    \gitoptions{directory,formatDate,formatTime,revision,showTimeZone}
 %
 %    \begin{macrocode}
 \newcommand{\gitcommitdate}[1][]{%
@@ -341,7 +407,7 @@ Copyright (c) 2016 Camil Staps <info@camilstaps.nl>
 %
 %\begin{macro}{\gitcommitauthor}
 %    Get a commit author.
-%    \gitoptions{revision}
+%    \gitoptions{directory,revision}
 %
 %    \begin{macrocode}
 \newcommand{\gitcommitauthor}[1][]{%
@@ -362,7 +428,7 @@ Copyright (c) 2016 Camil Staps <info@camilstaps.nl>
 %
 %\begin{macro}{\gitcommitauthorname}
 %    Get a commit author's name.
-%    \gitoptions{revision}
+%    \gitoptions{directory,revision}
 %
 %    \begin{macrocode}
 \newcommand{\gitcommitauthorname}[1][]{%
@@ -383,7 +449,7 @@ Copyright (c) 2016 Camil Staps <info@camilstaps.nl>
 %
 %\begin{macro}{\gitcommitauthoremail}
 %    Get a commit author's email address.
-%    \gitoptions{revision}
+%    \gitoptions{directory,revision}
 %
 %    \begin{macrocode}
 \newcommand{\gitcommitauthoremail}[1][]{%
@@ -408,3 +474,4 @@ Copyright (c) 2016 Camil Staps <info@camilstaps.nl>
 %    \end{comment}
 %
 %\Finale
+\endinput

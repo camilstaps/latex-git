@@ -184,3 +184,5 @@ TSWLatexianTemp*
 *.ins
 *.pdf
 *.sty
+
+*.tmp
