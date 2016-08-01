@@ -108,12 +108,14 @@ Copyright (c) 2016 Camil Staps <info@camilstaps.nl>
 %
 %\maketitle
 %
-%\DoNotIndex{\def,\expandafter,\global,\let,\newcommand,\relax}
+%\DoNotIndex{\def,\edef,\expandafter,\global,\let,\newcommand,\relax}
+%\DoNotIndex{\hbox,\ifdim,\setbox,\wd}
 %\DoNotIndex{\ifeof,\else,\fi,\newif}
 %\DoNotIndex{\NeedsTeXFormat,\PackageError,\ProvidesPackage,\RequirePackage}
 %\DoNotIndex{\newread,\openin,\read}
 %\DoNotIndex{\space,\unskip}
 %\DoNotIndex{\LaTeX,\pgfkeys}
+%\DoNotIndex{\git@@revision,\git@@thisdate,\git@@thishash,\git@@thismsg,\git@@parent}
 %
 %\begin{abstract}
 %  This is the documentation of the \latexgit{} package.
@@ -468,6 +470,53 @@ Copyright (c) 2016 Camil Staps <info@camilstaps.nl>
 }
 %    \end{macrocode}
 %\end{macro}
+%
+%\begin{macro}{\git@commitparent}
+%    Get the hash of the first parent.
+%    \begin{macrocode}
+\newcommand{\git@commitparent}[1][]{%
+  \pgfkeys{/git,default,#1}%
+  \git@command{git log -n 1 --pretty=raw \git@opt@Revision
+    | grep parent | head -1 | cut -d' ' -f2}%
+}
+%    \end{macrocode}
+%\end{macro}
+%
+%\begin{macro}{\gitchanges}
+%    Record the full \git{} commit history (following first parents using
+%    \cs{git@commitparent}) using \cs{changes}.
+%    \begin{macrocode}
+\newcommand{\gitchanges}[1][]{%
+  \git@changes[#1]{HEAD}
+}
+%    \end{macrocode}
+%\end{macro}
+%
+%\begin{macro}{\git@changes}
+%    Like \cs{gitchanges}, but accepts an extra argument for the revision.
+%    \begin{macrocode}
+\newcommand{\git@changes}[2][]{%
+  \edef\git@@revision{#2}%
+  \git@commithash[revision=\git@@revision]%
+  \edef\git@@thishash{\git@rawresult}%
+  \git@command{git log -n 1 --date=iso \git@@revision
+    | grep Date | head -1 | cut -d' ' -f4}%
+  \edef\git@@thisdate{\git@rawresult}%
+  \git@commitmsg[revision=\git@@revision]%
+  \edef\git@@thismsg{\git@rawresult}%
+  \changes{\git@@thisdate\unskip: \git@@thishash}\git@@thisdate\git@@thismsg%
+  \git@commitparent[revision=\git@@revision]%
+  \let\git@@parent\git@rawresult%
+  \setbox0=\hbox{\git@@parent\unskip}\ifdim\wd0=0pt
+  \else%
+    \git@changes{\git@@parent}%
+  \fi%
+}
+%    \end{macrocode}
+%\end{macro}
+%
+%    \gitchanges
+%
 %
 %    \begin{comment}
 %</package>
