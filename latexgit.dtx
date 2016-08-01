@@ -126,12 +126,6 @@ Copyright (c) 2016 Camil Staps <info@camilstaps.nl>
 %
 %\section{Overview}
 %\label{sec:overview}
-%This is version \gitcommithash[shortHash] of the \latexgit{} documentation.
-%It was committed by \gitcommitauthorname{} on
-%  \gitcommitdate[formatDate,formatTime].
-%The author mentioned: ``\gitcommitmsg''.
-%The previous commit was \gitcommithash[shortHash,revision=HEAD^].
-%
 %\subsection{Related packages}
 %\label{sec:overview:related-packages}
 %Brent Longborough's \textsf{gitinfo} and \textsf{gitinfo2} packages have
@@ -142,9 +136,6 @@ Copyright (c) 2016 Camil Staps <info@camilstaps.nl>
 %Andr\'e Hilbig's \textsf{gitfile-info} does something similar as
 %\textsf{gitinfo} and \latexgit, but the package manual is in German so who
 %knows. It seems that Python and \git{} hooks are required.
-%
-%Brent Longborough's \textsf{gitlog} package fetches \git{} log information
-%from the repository and formats it.
 %
 %\subsection{Dependencies}
 %\label{sec:overview:dependencies}
@@ -184,16 +175,15 @@ Copyright (c) 2016 Camil Staps <info@camilstaps.nl>
 %to see which options are relevant.
 %
 %\begin{options}
-%  \def\seedatestable{See \autoref{tab:formatting-dates} for an overview.}
 %  \label{options}
 %  \item[directory=DIR]
 %    Use the git repository in directory \verb$DIR$ (or its first parent
 %    directory that is a git repository). \latexgit{} will \bashcmd{cd} to this
 %    directory before executing the actual \git{} command.
 %  \item[formatDate]
-%    Format dates using \textsf{datetime}'s \cs{formatdate}. \seedatestable
+%    Format dates using \textsf{datetime}'s \cs{formatdate}.
 %  \item[formatTime]
-%    Format times using \textsf{datetime}'s \cs{formattime}. \seedatestable
+%    Format times using \textsf{datetime}'s \cs{formattime}.
 %  \item[formatInterDateTime]
 %    If both \gitopt{formatDate} and \gitopt{formatTime} are set, this is put
 %    in between (e.g.  `\verb$\space{}at\space{}$' in English --- this is also
@@ -205,42 +195,28 @@ Copyright (c) 2016 Camil Staps <info@camilstaps.nl>
 %    \LTXinputExample[numbers=none,pos=r]{exmp/catcode-circumflex.tex}
 %  \item[showTimeZone]
 %    When \gitopt{formatTime} is set: show the time zone between parentheses
-%    after the time. \seedatestable
+%    after the time.
 %  \item[shortHash]
 %    Get only the first seven characters of the hash, as in \gitcmd{git log
 %    -{}-oneline}.
 %\end{options}
-%
-%\begin{table}
-%  \centering\footnotesize
-%  \begin{tabular}{c c c c}
-%    \texttt{formatDate} & \texttt{formatTime} & \texttt{showTimeZone} & Result
-%    \\[2pt]\hline\rule{0pt}{3ex}
-%               &            & (any)      &
-%      \gitcommitdate[showTimeZone] \\
-%               & \checkmark &            &
-%      \gitcommitdate[formatTime] \\
-%               & \checkmark & \checkmark &
-%      \gitcommitdate[formatTime,showTimeZone] \\
-%    \checkmark &            & (any)      &
-%      \gitcommitdate[formatDate,showTimeZone] \\
-%    \checkmark & \checkmark &            &
-%      \gitcommitdate[formatDate,formatTime] \\
-%    \checkmark & \checkmark & \checkmark &
-%      \gitcommitdate[formatDate,formatTime,showTimeZone] \\
-%  \end{tabular}
-%  \caption{Formatting dates, with
-%    \texcmd{formatInterDateTime=\textbackslash{}space\{\}at\textbackslash{}space\{\}}.
-%    \label{tab:formatting-dates}}
-%\end{table}
 %
 %\section{Examples}
 %\label{sec:examples}
 %\DescribeMacro{\gitcommithash}
 %\DescribeMacro{\gitcommitmsg}
 %\DescribeMacro{\gitcommitauthor}
+%\DescribeMacro{\gitcommitauthorname}
+%\DescribeMacro{\gitcommitauthoremail}
 %    These macros are used to get and print basic commit information.
 %    \LTXinputExample[pos=b,numbers=none]{exmp/gitcommit.tex}
+%
+%\DescribeMacro{\gitcommitdate}
+%    This macro displays the \git{} commit date.
+%    The following example shows a usage example and shows the results of the
+%    options
+%    \gitopt{formatDate}, \gitopt{formatTime} and \gitopt{showTimeZone}.
+%    \LTXinputExample[pos=b,numbers=none]{exmp/gitcommitdate.tex}
 %
 %\section{Implementation}
 %\label{sec:implementation}

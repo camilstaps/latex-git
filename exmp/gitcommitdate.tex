@@ -1,0 +1,17 @@
+\footnotesize
+\begin{tabular}{c c c c}
+  \texttt{formatDate} & \texttt{formatTime} & \texttt{showTimeZone} & Result
+  \\[2pt]\hline\rule{0pt}{3ex}
+             &            & (any)      &
+    \gitcommitdate[showTimeZone] \\
+             & \checkmark &            &
+    \gitcommitdate[formatTime] \\
+             & \checkmark & \checkmark &
+    \gitcommitdate[formatTime,showTimeZone] \\
+  \checkmark &            & (any)      &
+    \gitcommitdate[formatDate,showTimeZone] \\
+  \checkmark & \checkmark &            &
+    \gitcommitdate[formatDate,formatTime] \\
+  \checkmark & \checkmark & \checkmark &
+    \gitcommitdate[formatDate,formatTime,showTimeZone] \\
+\end{tabular}
