@@ -108,13 +108,18 @@ Copyright (c) 2016 Camil Staps <info@camilstaps.nl>
 %
 %\maketitle
 %
-%\DoNotIndex{\def,\edef,\expandafter,\global,\let,\newcommand,\relax}
+%\gitchanges
+%
+%\DoNotIndex{\def,\edef,\expandafter,\global,\let,\newcommand,\relax,\catcode}
+%\DoNotIndex{\begingroup,\endgroup}
+%\expandafter\DoNotIndex\expandafter{\string\^}
 %\DoNotIndex{\hbox,\ifdim,\setbox,\wd}
 %\DoNotIndex{\ifeof,\else,\fi,\newif}
 %\DoNotIndex{\NeedsTeXFormat,\PackageError,\ProvidesPackage,\RequirePackage}
-%\DoNotIndex{\newread,\openin,\read}
+%\DoNotIndex{\endlinechar,\newread,\openin,\read,\readline}
 %\DoNotIndex{\space,\unskip}
-%\DoNotIndex{\LaTeX,\pgfkeys}
+%\DoNotIndex{\LaTeX,\pgfkeys,\changes}
+%\DoNotIndex{\formatdate,\formattime}
 %\DoNotIndex{\git@@revision,\git@@thisdate,\git@@thishash,\git@@thismsg,\git@@parent}
 %
 %\begin{abstract}
@@ -295,8 +300,12 @@ Copyright (c) 2016 Camil Staps <info@camilstaps.nl>
       {invoke LaTeX with the -shell-escape flag}%
       {invoke LaTeX with the -shell-escape flag}%
   \else%
-    \read\git@stream to \git@streamoutput%
+    \begingroup%
+    \catcode`\^^M9%
+    \endlinechar=-1%
+    \readline\git@stream to \git@streamoutput%
     \global\let\git@rawresult\git@streamoutput%
+    \endgroup%
   \fi%
 }
 %    \end{macrocode}
@@ -514,8 +523,6 @@ Copyright (c) 2016 Camil Staps <info@camilstaps.nl>
 }
 %    \end{macrocode}
 %\end{macro}
-%
-%    \gitchanges
 %
 %
 %    \begin{comment}
