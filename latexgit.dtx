@@ -58,6 +58,7 @@ Licensed under GPL v3.
 \usepackage{enumitem}
 \usepackage{verbatim}
 \usepackage{amssymb}
+\usepackage{xstring}
 \EnableCrossrefs
 \CodelineIndex
 \RecordChanges
@@ -530,8 +531,10 @@ Licensed under GPL v3.
   \git@command{git log -n 1 --format=%ad --date=short \git@opt@Revision}&
   \edef\git@@thisdate{\git@rawresult}&
   \git@commitmsg[revision=\git@@revision]&
-  \edef\git@@thismsg{\git@rawresult}&
-  \changes{\git@@thisdate\unskip: \git@@thishash}\git@@thisdate\git@@thismsg&
+  & TODO: this removes '=' characters because they break \changes, but the real
+  & solution would be to put something back that restores these characters.
+  \StrSubstitute[0]{\git@rawresult}{=}{}[\git@@thismsg]&
+  \changes{\git@@thisdate\unskip: \git@@thishash}{\git@@thisdate}{\git@@thismsg}&
   \git@commitparent[revision=\git@@revision]&
   \let\git@@parent\git@rawresult&
   \setbox0=\hbox{\git@@parent\unskip}\ifdim\wd0=0pt
