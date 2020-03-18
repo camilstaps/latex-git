@@ -328,11 +328,9 @@ Licensed under GPL v3.
 \newcommand{\git@commithash}[1][]{%
   \pgfkeys{/git,default,#1}%
   \ifgit@opt@ShortHash%
-    \git@command{git log -n 1 --oneline \git@opt@Revision
-      | cut -d' ' -f1}%
+    \git@command{git rev-parse --short \git@opt@Revision}%
   \else%
-    \git@command{git log -n 1 \git@opt@Revision
-      | head -1 | cut -d' ' -f2}%
+    \git@command{git rev-parse \git@opt@Revision}%
   \fi%
 }
 %    \end{macrocode}
@@ -351,11 +349,12 @@ Licensed under GPL v3.
 %\begin{macro}{\git@commitmsg}
 %    Like \cs{gitcommitmsg}, but does not return the output.
 %    \begin{macrocode}
-\newcommand{\git@commitmsg}[1][]{%
-  \pgfkeys{/git,default,#1}%
-  \git@command{git log -n 1 --oneline \git@opt@Revision
-    | cut -d' ' -f2-}%
+\catcode`\&=14\catcode`\%=11
+\newcommand{\git@commitmsg}[1][]{&
+  \pgfkeys{/git,default,#1}&
+  \git@command{git log -n 1 --format=%B \git@opt@Revision}&
 }
+\catcode`\&=4\catcode`\%=14
 %    \end{macrocode}
 %\end{macro}
 %
@@ -409,11 +408,12 @@ Licensed under GPL v3.
 %\begin{macro}{\git@commitdate}
 %    Like \cs{gitcommitdate}, but does not return the output.
 %    \begin{macrocode}
-\newcommand{\git@commitdate}[1][]{%
-  \pgfkeys{/git,default,#1}%
-  \git@command{git log -n 1 --date=iso \git@opt@Revision
-    | grep Date | head -1 | cut -d' ' -f2-}%
+\catcode`\&=14\catcode`\%=11
+\newcommand{\git@commitdate}[1][]{&
+  \pgfkeys{/git,default,#1}&
+  \git@command{git log -n 1 --format=%ai \git@opt@Revision}&
 }
+\catcode`\&=4\catcode`\%=14
 %    \end{macrocode}
 %\end{macro}
 %
@@ -430,11 +430,12 @@ Licensed under GPL v3.
 %\begin{macro}{\git@commitauthor}
 %    Like \cs{gitcommitauthor}, but does not return the output.
 %    \begin{macrocode}
-\newcommand{\git@commitauthor}[1][]{%
-  \pgfkeys{/git,default,#1}%
-  \git@command{git log -n 1 \git@opt@Revision
-    | grep Author | head -1 | cut -d' ' -f2-}%
+\catcode`\&=14\catcode`\%=11
+\newcommand{\git@commitauthor}[1][]{&
+  \pgfkeys{/git,default,#1}&
+  \git@command{git log -n 1 --format='%an <%ae>' \git@opt@Revision}&
 }
+\catcode`\&=4\catcode`\%=14
 %    \end{macrocode}
 %\end{macro}
 %
@@ -451,11 +452,12 @@ Licensed under GPL v3.
 %\begin{macro}{\git@commitauthorname}
 %    Like \cs{gitcommitauthorname}, but does not return the output.
 %    \begin{macrocode}
-\newcommand{\git@commitauthorname}[1][]{%
-  \pgfkeys{/git,default,#1}%
-  \git@command{git log -n 1 \git@opt@Revision
-    | grep Author | head -1 | cut -d' ' -f2- | cut -d'<' -f1}%
+\catcode`\&=14\catcode`\%=11
+\newcommand{\git@commitauthorname}[1][]{&
+  \pgfkeys{/git,default,#1}&
+  \git@command{git log -n 1 --format=%an \git@opt@Revision}&
 }
+\catcode`\&=4\catcode`\%=14
 %    \end{macrocode}
 %\end{macro}
 %
@@ -472,23 +474,24 @@ Licensed under GPL v3.
 %\begin{macro}{\git@commitauthoremail}
 %    Like \cs{gitcommitauthoremail}, but does not return the output.
 %    \begin{macrocode}
-\newcommand{\git@commitauthoremail}[1][]{%
-  \pgfkeys{/git,default,#1}%
-  \git@command{git log -n 1 \git@opt@Revision
-    | grep Author | head -1 | cut -d' ' -f2-
-    | cut -d'<' -f2 | cut -d'>' -f1}%
+\catcode`\&=14\catcode`\%=11
+\newcommand{\git@commitauthoremail}[1][]{&
+  \pgfkeys{/git,default,#1}&
+  \git@command{git log -n 1 --format=%ae \git@opt@Revision}&
 }
+\catcode`\&=4\catcode`\%=14
 %    \end{macrocode}
 %\end{macro}
 %
 %\begin{macro}{\git@commitparent}
 %    Get the hash of the first parent.
 %    \begin{macrocode}
-\newcommand{\git@commitparent}[1][]{%
-  \pgfkeys{/git,default,#1}%
-  \git@command{git log -n 1 --pretty=raw \git@opt@Revision
-    | grep parent | head -1 | cut -d' ' -f2}%
+\catcode`\&=14\catcode`\%=11
+\newcommand{\git@commitparent}[1][]{&
+  \pgfkeys{/git,default,#1}&
+  \git@command{git log -n 1 --format=%p \git@opt@Revision | cut -d' ' -f2}&
 }
+\catcode`\&=4\catcode`\%=14
 %    \end{macrocode}
 %\end{macro}
 %
@@ -505,23 +508,24 @@ Licensed under GPL v3.
 %\begin{macro}{\git@changes}
 %    Like \cs{gitchanges}, but accepts an extra argument for the revision.
 %    \begin{macrocode}
-\newcommand{\git@changes}[2][]{%
-  \edef\git@@revision{#2}%
-  \git@commithash[revision=\git@@revision]%
-  \edef\git@@thishash{\git@rawresult}%
-  \git@command{git log -n 1 --date=iso \git@@revision
-    | grep Date | head -1 | cut -d' ' -f4}%
-  \edef\git@@thisdate{\git@rawresult}%
-  \git@commitmsg[revision=\git@@revision]%
-  \edef\git@@thismsg{\git@rawresult}%
-  \changes{\git@@thisdate\unskip: \git@@thishash}\git@@thisdate\git@@thismsg%
-  \git@commitparent[revision=\git@@revision]%
-  \let\git@@parent\git@rawresult%
+\catcode`\&=14\catcode`\%=11
+\newcommand{\git@changes}[2][]{&
+  \edef\git@@revision{#2}&
+  \git@commithash[revision=\git@@revision]&
+  \edef\git@@thishash{\git@rawresult}&
+  \git@command{git log -n 1 --format=%ad --date=short \git@opt@Revision}&
+  \edef\git@@thisdate{\git@rawresult}&
+  \git@commitmsg[revision=\git@@revision]&
+  \edef\git@@thismsg{\git@rawresult}&
+  \changes{\git@@thisdate\unskip: \git@@thishash}\git@@thisdate\git@@thismsg&
+  \git@commitparent[revision=\git@@revision]&
+  \let\git@@parent\git@rawresult&
   \setbox0=\hbox{\git@@parent\unskip}\ifdim\wd0=0pt
-  \else%
-    \git@changes{\git@@parent}%
-  \fi%
+  \else&
+    \git@changes{\git@@parent}&
+  \fi&
 }
+\catcode`\&=4\catcode`\%=14
 %    \end{macrocode}
 %\end{macro}
 %
