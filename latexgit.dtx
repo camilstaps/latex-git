@@ -316,6 +316,12 @@ Licensed under GPL v3.
 %    \end{macrocode}
 %\end{macro}
 %
+%In what follows, \verb$%$ may be used in calls to \git{}. Therefore we use
+%\verb$&$ as comment character.
+%    \begin{macrocode}
+\catcode`\&=14\catcode`\%=11
+%    \end{macrocode}
+%
 %\begin{macro}{\git@space}
 %    For internal use, when a space is required after a \texttt{csname} in a
 %    call to \cs{git@command}.
@@ -329,7 +335,7 @@ Licensed under GPL v3.
 %    \gitoptions{directory,revision,shortHash}
 %
 %    \begin{macrocode}
-\newcommand{\gitcommithash}[1][]{%
+\newcommand{\gitcommithash}[1][]{&
   \git@commithash[#1]\git@result}
 %    \end{macrocode}
 %\end{macro}
@@ -337,7 +343,6 @@ Licensed under GPL v3.
 %\begin{macro}{\git@commithash}
 %    Like \cs{gitcommithash}, but does not return the output.
 %    \begin{macrocode}
-\catcode`\&=14\catcode`\%=11
 \newcommand{\git@commithash}[1][]{&
   \pgfkeys{/git,default,#1}&
   \ifgit@opt@ShortHash&
@@ -348,7 +353,6 @@ Licensed under GPL v3.
       \git@opt@Revision\git@space -- \git@opt@File}&
   \fi&
 }
-\catcode`\&=4\catcode`\%=14
 %    \end{macrocode}
 %\end{macro}
 %
@@ -357,7 +361,7 @@ Licensed under GPL v3.
 %    \gitoptions{directory,revision}
 %
 %    \begin{macrocode}
-\newcommand{\gitcommitmsg}[1][]{%
+\newcommand{\gitcommitmsg}[1][]{&
   \git@commitmsg[#1]\git@result}
 %    \end{macrocode}
 %\end{macro}
@@ -365,13 +369,11 @@ Licensed under GPL v3.
 %\begin{macro}{\git@commitmsg}
 %    Like \cs{gitcommitmsg}, but does not return the output.
 %    \begin{macrocode}
-\catcode`\&=14\catcode`\%=11
 \newcommand{\git@commitmsg}[1][]{&
   \pgfkeys{/git,default,#1}&
   \git@command{git log -n 1 --format=%B
     \git@opt@Revision\git@space -- \git@opt@File}&
 }
-\catcode`\&=4\catcode`\%=14
 %    \end{macrocode}
 %\end{macro}
 %
@@ -379,7 +381,7 @@ Licensed under GPL v3.
 %    Format a commit date in ISO format using \textsf{datetime}'s
 %    \cs{formatdate}.
 %    \begin{macrocode}
-\def\git@formatCommitDate#1-#2-#3 #4:#5:#6 +#7\relax{%
+\def\git@formatCommitDate#1-#2-#3 #4:#5:#6 +#7\relax{&
   \formatdate{#3}{#2}{#1}%
 }
 %    \end{macrocode}
@@ -389,11 +391,11 @@ Licensed under GPL v3.
 %    Format a commit time using \textsf{datetime}'s \cs{formattime}.
 %    \gitoptions{showTimeZone}
 %    \begin{macrocode}
-\def\git@formatCommitTime#1-#2-#3 #4:#5:#6 +#7\relax{%
-  \formattime{#4}{#5}{#6}%
-  \ifgit@opt@ShowTimeZone%
-    \space(+#7\unskip)%
-  \fi%
+\def\git@formatCommitTime#1-#2-#3 #4:#5:#6 +#7\relax{&
+  \formattime{#4}{#5}{#6}&
+  \ifgit@opt@ShowTimeZone&
+    \space(+#7\unskip)&
+  \fi&
 }
 %    \end{macrocode}
 %\end{macro}
@@ -405,19 +407,19 @@ Licensed under GPL v3.
 %    \gitoptions{directory,formatDate,formatTime,revision,showTimeZone}
 %
 %    \begin{macrocode}
-\newcommand{\gitcommitdate}[1][]{%
-  \git@commitdate[#1]%
-  \ifgit@opt@FormatDate%
-    \expandafter\git@formatCommitDate\git@rawresult\relax%
-    \ifgit@opt@FormatTime%
-      \git@opt@FormatInterDateTime%
-      \expandafter\git@formatCommitTime\git@rawresult\relax%
+\newcommand{\gitcommitdate}[1][]{&
+  \git@commitdate[#1]&
+  \ifgit@opt@FormatDate&
+    \expandafter\git@formatCommitDate\git@rawresult\relax&
+    \ifgit@opt@FormatTime&
+      \git@opt@FormatInterDateTime&
+      \expandafter\git@formatCommitTime\git@rawresult\relax&
     \fi
-  \else\ifgit@opt@FormatTime%
-    \expandafter\git@formatCommitTime\git@rawresult\relax%
+  \else\ifgit@opt@FormatTime&
+    \expandafter\git@formatCommitTime\git@rawresult\relax&
   \else
-    \git@result%
-  \fi\fi%
+    \git@result&
+  \fi\fi&
 }
 %    \end{macrocode}
 %\end{macro}
@@ -425,13 +427,11 @@ Licensed under GPL v3.
 %\begin{macro}{\git@commitdate}
 %    Like \cs{gitcommitdate}, but does not return the output.
 %    \begin{macrocode}
-\catcode`\&=14\catcode`\%=11
 \newcommand{\git@commitdate}[1][]{&
   \pgfkeys{/git,default,#1}&
   \git@command{git log -n 1 --format=%ai
     \git@opt@Revision\git@space -- \git@opt@File}&
 }
-\catcode`\&=4\catcode`\%=14
 %    \end{macrocode}
 %\end{macro}
 %
@@ -440,7 +440,7 @@ Licensed under GPL v3.
 %    \gitoptions{directory,revision}
 %
 %    \begin{macrocode}
-\newcommand{\gitcommitauthor}[1][]{%
+\newcommand{\gitcommitauthor}[1][]{&
   \git@commitauthor[#1]\git@result}
 %    \end{macrocode}
 %\end{macro}
@@ -448,13 +448,11 @@ Licensed under GPL v3.
 %\begin{macro}{\git@commitauthor}
 %    Like \cs{gitcommitauthor}, but does not return the output.
 %    \begin{macrocode}
-\catcode`\&=14\catcode`\%=11
 \newcommand{\git@commitauthor}[1][]{&
   \pgfkeys{/git,default,#1}&
   \git@command{git log -n 1 --format='%an <%ae>'
     \git@opt@Revision\git@space -- \git@opt@File}&
 }
-\catcode`\&=4\catcode`\%=14
 %    \end{macrocode}
 %\end{macro}
 %
@@ -463,7 +461,7 @@ Licensed under GPL v3.
 %    \gitoptions{directory,revision}
 %
 %    \begin{macrocode}
-\newcommand{\gitcommitauthorname}[1][]{%
+\newcommand{\gitcommitauthorname}[1][]{&
   \git@commitauthorname[#1]\git@result}
 %    \end{macrocode}
 %\end{macro}
@@ -471,13 +469,11 @@ Licensed under GPL v3.
 %\begin{macro}{\git@commitauthorname}
 %    Like \cs{gitcommitauthorname}, but does not return the output.
 %    \begin{macrocode}
-\catcode`\&=14\catcode`\%=11
 \newcommand{\git@commitauthorname}[1][]{&
   \pgfkeys{/git,default,#1}&
   \git@command{git log -n 1 --format=%an
     \git@opt@Revision\git@space -- \git@opt@File}&
 }
-\catcode`\&=4\catcode`\%=14
 %    \end{macrocode}
 %\end{macro}
 %
@@ -486,7 +482,7 @@ Licensed under GPL v3.
 %    \gitoptions{directory,revision}
 %
 %    \begin{macrocode}
-\newcommand{\gitcommitauthoremail}[1][]{%
+\newcommand{\gitcommitauthoremail}[1][]{&
   \git@commitauthoremail[#1]\git@result}
 %    \end{macrocode}
 %\end{macro}
@@ -494,27 +490,23 @@ Licensed under GPL v3.
 %\begin{macro}{\git@commitauthoremail}
 %    Like \cs{gitcommitauthoremail}, but does not return the output.
 %    \begin{macrocode}
-\catcode`\&=14\catcode`\%=11
 \newcommand{\git@commitauthoremail}[1][]{&
   \pgfkeys{/git,default,#1}&
   \git@command{git log -n 1 --format=%ae
     \git@opt@Revision\git@space -- \git@opt@File}&
 }
-\catcode`\&=4\catcode`\%=14
 %    \end{macrocode}
 %\end{macro}
 %
 %\begin{macro}{\git@commitparent}
 %    Get the hash of the first parent.
 %    \begin{macrocode}
-\catcode`\&=14\catcode`\%=11
 \newcommand{\git@commitparent}[1][]{&
   \pgfkeys{/git,default,#1}&
   \git@command{git log -n 1 --format=%p
     \git@opt@Revision\git@space -- \git@opt@File
     | cut -d' ' -f2}&
 }
-\catcode`\&=4\catcode`\%=14
 %    \end{macrocode}
 %\end{macro}
 %
@@ -522,7 +514,7 @@ Licensed under GPL v3.
 %    Record the full \git{} commit history (following first parents using
 %    \cs{git@commitparent}) using \cs{changes}.
 %    \begin{macrocode}
-\newcommand{\gitchanges}[1][]{%
+\newcommand{\gitchanges}[1][]{&
   \git@changes[#1]{HEAD}
 }
 %    \end{macrocode}
@@ -531,7 +523,6 @@ Licensed under GPL v3.
 %\begin{macro}{\git@changes}
 %    Like \cs{gitchanges}, but accepts an extra argument for the revision.
 %    \begin{macrocode}
-\catcode`\&=14\catcode`\%=11
 \newcommand{\git@changes}[2][]{&
   \edef\git@@revision{#2}&
   \git@commithash[revision=\git@@revision]&
@@ -548,10 +539,13 @@ Licensed under GPL v3.
     \git@changes{\git@@parent}&
   \fi&
 }
-\catcode`\&=4\catcode`\%=14
 %    \end{macrocode}
 %\end{macro}
 %
+%Reset the catcodes for \verb$%$ and \verb$&$:
+%    \begin{macrocode}
+\catcode`\&=4\catcode`\%=14
+%    \end{macrocode}
 %
 %    \begin{comment}
 %</package>
