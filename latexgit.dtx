@@ -113,6 +113,7 @@ Licensed under GPL v3.
 %\gitchanges
 %
 %\DoNotIndex{\def,\edef,\expandafter,\global,\let,\newcommand,\relax,\catcode}
+%\DoNotIndex{\%,\&} % this does not work currently due to a known bug
 %\DoNotIndex{\begingroup,\endgroup}
 %\expandafter\DoNotIndex\expandafter{\string\^}
 %\DoNotIndex{\hbox,\ifdim,\setbox,\wd}
@@ -122,6 +123,7 @@ Licensed under GPL v3.
 %\DoNotIndex{\space,\unskip}
 %\DoNotIndex{\LaTeX,\pgfkeys,\changes}
 %\DoNotIndex{\formatdate,\formattime}
+%\DoNotIndex{\StrSubstitute}
 %\DoNotIndex{\git@@revision,\git@@thisdate,\git@@thishash,\git@@thismsg,\git@@parent}
 %
 %\begin{abstract}
@@ -383,7 +385,7 @@ Licensed under GPL v3.
 %    \cs{formatdate}.
 %    \begin{macrocode}
 \def\git@formatCommitDate#1-#2-#3 #4:#5:#6 +#7\relax{&
-  \formatdate{#3}{#2}{#1}%
+  \formatdate{#3}{#2}{#1}&
 }
 %    \end{macrocode}
 %\end{macro}
