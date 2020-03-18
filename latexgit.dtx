@@ -188,6 +188,8 @@ Licensed under GPL v3.
 %    Use the git repository in directory \verb$DIR$ (or its first parent
 %    directory that is a git repository). \latexgit{} will \bashcmd{cd} to this
 %    directory before executing the actual \git{} command.
+%  \item[file=FILE]
+%    Get the information for the last commit modifying \verb$FILE$.
 %  \item[formatDate]
 %    Format dates using \textsf{datetime}'s \cs{formatdate}.
 %  \item[formatTime]
@@ -271,6 +273,7 @@ Licensed under GPL v3.
   /git/.is family, /git,
   default/.style={
     directory=.,
+    file=,
     formatDate=false,
     formatInterDateTime=\space{}at\space{},
     formatTime=false,
@@ -279,6 +282,7 @@ Licensed under GPL v3.
     shortHash=true,
   },
   directory/.estore in=\git@opt@Directory,
+  file/.estore in=\git@opt@File,
   formatDate/.is if=git@opt@FormatDate,
   formatInterDateTime/.estore in=\git@opt@FormatInterDateTime,
   formatTime/.is if=git@opt@FormatTime,
@@ -312,6 +316,14 @@ Licensed under GPL v3.
 %    \end{macrocode}
 %\end{macro}
 %
+%\begin{macro}{\git@space}
+%    For internal use, when a space is required after a \texttt{csname} in a
+%    call to \cs{git@command}.
+%    \begin{macrocode}
+\def\git@space{ }
+%    \end{macrocode}
+%\end{macro}
+%
 %\begin{macro}{\gitcommithash}
 %    Get a commit hash.
 %    \gitoptions{directory,revision,shortHash}
@@ -325,14 +337,18 @@ Licensed under GPL v3.
 %\begin{macro}{\git@commithash}
 %    Like \cs{gitcommithash}, but does not return the output.
 %    \begin{macrocode}
-\newcommand{\git@commithash}[1][]{%
-  \pgfkeys{/git,default,#1}%
-  \ifgit@opt@ShortHash%
-    \git@command{git rev-parse --short \git@opt@Revision}%
-  \else%
-    \git@command{git rev-parse \git@opt@Revision}%
-  \fi%
+\catcode`\&=14\catcode`\%=11
+\newcommand{\git@commithash}[1][]{&
+  \pgfkeys{/git,default,#1}&
+  \ifgit@opt@ShortHash&
+    \git@command{git log -n 1 --format=%h
+      \git@opt@Revision\git@space -- \git@opt@File}&
+  \else&
+    \git@command{git log -n 1 --format=%H
+      \git@opt@Revision\git@space -- \git@opt@File}&
+  \fi&
 }
+\catcode`\&=4\catcode`\%=14
 %    \end{macrocode}
 %\end{macro}
 %
@@ -352,7 +368,8 @@ Licensed under GPL v3.
 \catcode`\&=14\catcode`\%=11
 \newcommand{\git@commitmsg}[1][]{&
   \pgfkeys{/git,default,#1}&
-  \git@command{git log -n 1 --format=%B \git@opt@Revision}&
+  \git@command{git log -n 1 --format=%B
+    \git@opt@Revision\git@space -- \git@opt@File}&
 }
 \catcode`\&=4\catcode`\%=14
 %    \end{macrocode}
@@ -411,7 +428,8 @@ Licensed under GPL v3.
 \catcode`\&=14\catcode`\%=11
 \newcommand{\git@commitdate}[1][]{&
   \pgfkeys{/git,default,#1}&
-  \git@command{git log -n 1 --format=%ai \git@opt@Revision}&
+  \git@command{git log -n 1 --format=%ai
+    \git@opt@Revision\git@space -- \git@opt@File}&
 }
 \catcode`\&=4\catcode`\%=14
 %    \end{macrocode}
@@ -433,7 +451,8 @@ Licensed under GPL v3.
 \catcode`\&=14\catcode`\%=11
 \newcommand{\git@commitauthor}[1][]{&
   \pgfkeys{/git,default,#1}&
-  \git@command{git log -n 1 --format='%an <%ae>' \git@opt@Revision}&
+  \git@command{git log -n 1 --format='%an <%ae>'
+    \git@opt@Revision\git@space -- \git@opt@File}&
 }
 \catcode`\&=4\catcode`\%=14
 %    \end{macrocode}
@@ -455,7 +474,8 @@ Licensed under GPL v3.
 \catcode`\&=14\catcode`\%=11
 \newcommand{\git@commitauthorname}[1][]{&
   \pgfkeys{/git,default,#1}&
-  \git@command{git log -n 1 --format=%an \git@opt@Revision}&
+  \git@command{git log -n 1 --format=%an
+    \git@opt@Revision\git@space -- \git@opt@File}&
 }
 \catcode`\&=4\catcode`\%=14
 %    \end{macrocode}
@@ -477,7 +497,8 @@ Licensed under GPL v3.
 \catcode`\&=14\catcode`\%=11
 \newcommand{\git@commitauthoremail}[1][]{&
   \pgfkeys{/git,default,#1}&
-  \git@command{git log -n 1 --format=%ae \git@opt@Revision}&
+  \git@command{git log -n 1 --format=%ae
+    \git@opt@Revision\git@space -- \git@opt@File}&
 }
 \catcode`\&=4\catcode`\%=14
 %    \end{macrocode}
@@ -489,7 +510,9 @@ Licensed under GPL v3.
 \catcode`\&=14\catcode`\%=11
 \newcommand{\git@commitparent}[1][]{&
   \pgfkeys{/git,default,#1}&
-  \git@command{git log -n 1 --format=%p \git@opt@Revision | cut -d' ' -f2}&
+  \git@command{git log -n 1 --format=%p
+    \git@opt@Revision\git@space -- \git@opt@File
+    | cut -d' ' -f2}&
 }
 \catcode`\&=4\catcode`\%=14
 %    \end{macrocode}
