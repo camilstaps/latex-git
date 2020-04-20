@@ -230,6 +230,11 @@ Licensed under GPL v3.
 %    \gitopt{formatDate}, \gitopt{formatTime} and \gitopt{showTimeZone}.
 %    \LTXinputExample[pos=b,numbers=none]{exmp/gitcommitdate.tex}
 %
+%\DescribeMacro{\gitcommand}
+%    This macro executes an arbitrary \git{} command and directly typesets the
+%    result. It only accepts the option \gitopt{directory}.
+%    \LTXinputExample[pos=b,numbers=none]{exmp/gitcommand.tex}
+%
 %\section{Implementation}
 %\label{sec:implementation}
 %Define the package and load required packages.
@@ -315,6 +320,17 @@ Licensed under GPL v3.
     \endgroup%
   \fi%
 }
+%    \end{macrocode}
+%\end{macro}
+%
+%\begin{macro}{\gitcommand}
+%    A wrapper around \cs{git@command} and \cs{git@result}, to directly typeset the
+%    result of arbitrary commands.
+%    \begin{macrocode}
+\newcommand{\gitcommand}[2][]{%
+  \pgfkeys{/git,default,#1}%
+  \git@command{git #2}%
+  \git@result}
 %    \end{macrocode}
 %\end{macro}
 %
